@@ -214,7 +214,7 @@ input:focus, select:focus, textarea:focus {
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(254,254,254,.92);
+  background: rgba(254,254,254,.97);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid transparent;
@@ -314,7 +314,9 @@ input:focus, select:focus, textarea:focus {
 /* ---------- HERO ---------- */
 .hero {
   height: 100vh;
-  min-height: 650px;
+  height: 100dvh;
+  min-height: 560px;
+  max-height: 900px;
   position: relative;
   display: flex;
   align-items: center;
