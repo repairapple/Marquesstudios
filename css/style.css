@@ -239,6 +239,8 @@ input:focus, select:focus, textarea:focus {
   font-weight: 600;
   color: var(--matte-black);
   letter-spacing: -0.5px;
+  position: relative;
+  z-index: 2;
 }
 
 .logo--footer {
@@ -1293,12 +1295,16 @@ input:focus, select:focus, textarea:focus {
     top: 70px;
     left: 0;
     right: 0;
-    background: rgba(254,254,254,.97);
+    bottom: 0;
+    background: rgba(254,254,254,.99);
     backdrop-filter: blur(12px);
-    padding: 24px;
+    -webkit-backdrop-filter: blur(12px);
+    padding: 20px 24px;
     transform: translateY(-110%);
     transition: transform var(--transition);
     box-shadow: var(--shadow);
+    overflow-y: auto;
+    z-index: 1;
   }
 
   .nav--open {
