@@ -457,6 +457,9 @@ input:focus, select:focus, textarea:focus {
   justify-content: center;
   position: relative;
   overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .comparison-card__label {
@@ -610,6 +613,9 @@ input:focus, select:focus, textarea:focus {
 .procedure-card__img {
   height: 180px;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .procedure-card__body {
@@ -687,6 +693,9 @@ input:focus, select:focus, textarea:focus {
   border-radius: var(--radius-lg);
   height: 460px;
   box-shadow: var(--shadow-lg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .about__content {
@@ -870,6 +879,9 @@ input:focus, select:focus, textarea:focus {
 
 .blog-card__img {
   height: 200px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .blog-card__body {
