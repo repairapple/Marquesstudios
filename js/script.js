@@ -284,41 +284,14 @@
       .then(function(response) { return response.json(); })
       .then(function(data) {
         if (data.sucesso) {
-          // Monta mensagem para WhatsApp
-          var message =
-            'Olá, Essence Studio! 💫%0A%0A' +
-            'Gostaria de agendar um horário:%0A' +
-            '👤 Nome: ' + encodeURIComponent(name) + '%0A' +
-            '💆‍♀️ Procedimento: ' + encodeURIComponent(procName) + '%0A' +
-            '📅 Data: ' + encodeURIComponent(dateValue) + '%0A' +
-            '⏰ Horário: ' + encodeURIComponent(timeValue);
-
-          if (notesValue) {
-            message += '%0A📝 Obs: ' + encodeURIComponent(notesValue);
-          }
-
-          var whatsappUrl = 'https://wa.me/5582996829318?text=' + message;
-          window.open(whatsappUrl, '_blank');
-
           scheduleForm.reset();
-          showToast('Agendamento enviado com sucesso! ✅');
+          showToast('Agendamento solicitado com sucesso! ✅');
         } else {
           showToast('Erro ao enviar. Tente novamente.');
         }
       })
       .catch(function() {
-        showToast('Servidor não encontrado. Abrindo WhatsApp...');
-        // Fallback: abre WhatsApp mesmo sem backend
-        var message =
-          'Olá, Essence Studio! 💫%0A%0A' +
-          'Gostaria de agendar um horário:%0A' +
-          '👤 Nome: ' + encodeURIComponent(name) + '%0A' +
-          '💆‍♀️ Procedimento: ' + encodeURIComponent(procName) + '%0A' +
-          '📅 Data: ' + encodeURIComponent(dateValue) + '%0A' +
-          '⏰ Horário: ' + encodeURIComponent(timeValue);
-        var whatsappUrl = 'https://wa.me/5582996829318?text=' + message;
-        window.open(whatsappUrl, '_blank');
-        scheduleForm.reset();
+        showToast('Servidor não encontrado. Tente novamente mais tarde.');
       });
     });
   }
