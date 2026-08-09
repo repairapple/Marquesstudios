@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Admin — Essence Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --gold: #b89b7a;
+      --gold-dark: #9c7f5f;
+      --brown-deep: #5c4a3a;
+      --white: #fefefe;
+      --off-white: #faf7f4;
+      --border: #e0d7ce;
+      --text: #3a322c;
+      --text-light: #7a7066;
+      --radius: 8px;
+      --radius-lg: 14px;
+      --shadow: 0 4px 20px rgba(0,0,0,.06);
+      --font-serif: 'Playfair Display', Georgia, serif;
+      --font-sans: 'Nunito', 'Segoe UI', Arial, sans-serif;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--off-white);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .login-overlay {
+      position: fixed; inset: 0; background: rgba(28,24,20,.7);
+      display: flex; align-items: center; justify-content: center; z-index: 999;
+    }
+    .login-box {
+      background: var(--white); padding: 40px 32px; border-radius: var(--radius-lg);
+      box-shadow: 0 20px 60px rgba(0,0,0,.2); width: 100%; max-width: 400px; text-align: center;
+    }
+    .login-box h1 { font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 8px; color: var(--brown-deep); }
+    .login-box p { font-size: 0.9rem; color: var(--text-light); margin-bottom: 24px; }
+    .login-box input { width: 100%; padding: 14px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; margin-bottom: 16px; font-family: var(--font-sans); }
+    .login-box .btn { width: 100%; padding: 14px; background: var(--gold); color: #fff; border: none; border-radius: 9999px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: background .3s; font-family: var(--font-sans); }
+    .login-box .btn:hover { background: var(--gold-dark); }
+    .login-box .error { color: #c0392b; font-size: 0.85rem; margin-top: 8px; }
+    .admin-header {
+      background: var(--brown-deep); color: #fff; padding: 20px 28px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .admin-header h1 { font-family: var(--font-serif); font-size: 1.5rem; }
+    .admin-header .btn-logout { padding: 8px 18px; border: 1.5px solid rgba(255,255,255,.5); color: #fff; background: transparent; border-radius: 9999px; cursor: pointer; font-size: 0.85rem; transition: background .3s; font-family: var(--font-sans); }
+    .admin-header .btn-logout:hover { background: rgba(255,255,255,.1); }
+    .container { max-width: 1100px; margin: 0 auto; padding: 28px 24px; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+    .stat-card { background: var(--white); padding: 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow); text-align: center; }
+    .stat-card strong { display: block; font-family: var(--font-serif); font-size: 2rem; color: var(--gold); }
+    .stat-card span { font-size: 0.82rem; color: var(--text-light); }
+    .section-title { font-family: var(--font-serif); font-size: 1.3rem; margin-bottom: 14px; color: var(--brown-deep); }
+    .table-wrapper { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th { background: var(--off-white); padding: 14px 16px; text-align: left; font-weight: 600; color: var(--brown-deep); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { padding: 14px 16px; border-top: 1px solid var(--border); vertical-align: middle; }
+    .badge { display: inline-block; padding: 4px 12px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+    .badge-pendente { background: #fff3cd; color: #856404; }
+    .badge-confirmado { background: #d4edda; color: #155724; }
+    .badge-cancelado { background: #f8d7da; color: #721c24; }
+    .badge-concluido { background: #d1ecf1; color: #0c5460; }
+    .btn-sm { padding: 6px 12px; border-radius: 9999px; border: 1.5px solid var(--border); background: var(--white); cursor: pointer; font-size: 0.78rem; transition: all .2s; font-family: var(--font-sans); margin: 2px; }
+    .btn-sm:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-sm.active { background: var(--gold); color: #fff; border-color: var(--gold); }
+    .empty { text-align: center; padding: 48px 20px; color: var(--text-light); }
+    .empty svg { opacity: .3; margin-bottom: 12px; }
+    .loading { text-align: center; padding: 48px; color: var(--text-light); }
+    @media (max-width: 768px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .table-wrapper { overflow-x: auto; }
+      table { min-width: 700px; }
+    }
+    @media (max-width: 480px) {
+      .stats { grid-template-columns: 1fr; }
+      .admin-header { flex-direction: column; gap: 10px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login -->
+  <div class="login-overlay" id="login-overlay">
+    <div class="login-box">
+      <h1>Essence Admin</h1>
+      <p>Digite a senha para acessar o painel de agendamentos.</p>
+      <input type="password" id="senha-input" placeholder="Senha de acesso" />
+      <button class="btn" onclick="fazerLogin()">Entrar</button>
+      <p class="error" id="login-error"></p>
+    </div>
+  </div>
+
+  <!-- Painel -->
+  <div id="painel" style="display:none;">
+    <header class="admin-header">
+      <h1>✨ Painel Admin — Essence Studio</h1>
+      <button class="btn-logout" onclick="logout()">Sair</button>
+    </header>
+    <div class="container">
+      <div class="stats" id="stats">
+        <div class="stat-card"><strong id="stat-total">0</strong><span>Total</span></div>
+        <div class="stat-card"><strong id="stat-pendente">0</strong><span>Pendentes</span></div>
+        <div class="stat-card"><strong id="stat-confirmado">0</strong><span>Confirmados</span></div>
+        <div class="stat-card"><strong id="stat-hoje">0</strong><span>Hoje</span></div>
+      </div>
+      <h2 class="section-title">📅 Agendamentos</h2>
+      <div class="table-wrapper">
+        <div class="loading" id="loading">Carregando agendamentos...</div>
+        <table id="tabela" style="display:none;">
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>WhatsApp</th>
+              <th>Procedimento</th>
+              <th>Data</th>
+              <th>Hora</th>
+              <th>Obs</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+        <div class="empty" id="empty" style="display:none;">
+          <p>📭 Nenhum agendamento encontrado.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SENHA = 'essence2026';
+    const API_URL = '/api/agendamentos?senha=' + SENHA;
+    const API_PUT = '/api/agendamentos';
+
+    let senhaSalva = localStorage.getItem('essence_admin_senha');
+
+    if (senhaSalva === SENHA) {
+      document.getElementById('login-overlay').style.display = 'none';
+      document.getElementById('painel').style.display = 'block';
+      carregarAgendamentos();
+    }
+
+    function fazerLogin() {
+      var input = document.getElementById('senha-input');
+      var erro = document.getElementById('login-error');
+      if (input.value === SENHA) {
+        localStorage.setItem('essence_admin_senha', SENHA);
+        document.getElementById('login-overlay').style.display = 'none';
+        document.getElementById('painel').style.display = 'block';
+        carregarAgendamentos();
+      } else {
+        erro.textContent = 'Senha incorreta. Tente novamente.';
+        input.value = '';
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('essence_admin_senha');
+      location.reload();
+    }
+
+    async function carregarAgendamentos() {
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('tabela').style.display = 'none';
+      document.getElementById('empty').style.display = 'none';
+      try {
+        var res = await fetch(API_URL);
+        var dados = await res.json();
+        document.getElementById('loading').style.display = 'none';
+        if (dados.length === 0) {
+          document.getElementById('empty').style.display = 'block';
+          atualizarStats([]);
+          return;
+        }
+        document.getElementById('tabela').style.display = '';
+        var tbody = document.getElementById('tbody');
+        tbody.innerHTML = '';
+        dados.forEach(function (a) {
+          var dataObj = new Date(a.data + 'T00:00:00');
+          var dataFormatada = dataObj.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+          var badgeClass = 'badge-pendente';
+          if (a.status === 'confirmado') badgeClass = 'badge-confirmado';
+          if (a.status === 'cancelado') badgeClass = 'badge-cancelado';
+          if (a.status === 'concluido') badgeClass = 'badge-concluido';
+          tbody.innerHTML += `
+            <tr>
+              <td><strong>${escapeHtml(a.nome)}</strong></td>
+              <td>${escapeHtml(a.whatsapp)}</td>
+              <td>${escapeHtml(a.procedimento)}</td>
+              <td>${dataFormatada}</td>
+              <td>${escapeHtml(a.horario)}</td>
+              <td>${escapeHtml(a.observacoes || '-')}</td>
+              <td><span class="badge ${badgeClass}">${a.status}</span></td>
+              <td style="white-space:nowrap;">
+                <button class="btn-sm ${a.status==='confirmado'?'active':''}" onclick="mudarStatus('${a.id}','confirmado')">✓</button>
+                <button class="btn-sm ${a.status==='pendente'?'active':''}" onclick="mudarStatus('${a.id}','pendente')">⏳</button>
+                <button class="btn-sm ${a.status==='concluido'?'active':''}" onclick="mudarStatus('${a.id}','concluido')">✔</button>
+                <button class="btn-sm ${a.status==='cancelado'?'active':''}" onclick="mudarStatus('${a.id}','cancelado')">✕</button>
+              </td>
+            </tr>
+          `;
+        });
+        atualizarStats(dados);
+        atualizarRelogio();
+      } catch (e) {
+        document.getElementById('loading').innerHTML = 'Erro ao carregar. Verifique se o servidor está rodando.';
+      }
+    }
+
+    function atualizarStats(dados) {
+      var total = dados.length;
+      var pendente = dados.filter(function(a) { return a.status === 'pendente'; }).length;
+      var confirmado = dados.filter(function(a) { return a.status === 'confirmado'; }).length;
+      var hoje = new Date().toISOString().slice(0, 10);
+      var hojeCount = dados.filter(function(a) { return a.data === hoje; }).length;
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-pendente').textContent = pendente;
+      document.getElementById('stat-confirmado').textContent = confirmado;
+      document.getElementById('stat-hoje').textContent = hojeCount;
+    }
+
+    var relogioInterval;
+    function atualizarRelogio() {
+      if (relogioInterval) clearInterval(relogioInterval);
+      relogioInterval = setInterval(carregarAgendamentos, 30000); // atualiza a cada 30s
+    }
+
+    async function mudarStatus(id, novoStatus) {
+      try {
+        await fetch(API_PUT + '/' + id + '?senha=' + SENHA, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: novoStatus })
+        });
+        carregarAgendamentos();
+      } catch (e) {
+        alert('Erro ao atualizar status.');
+      }
+    }
+
+    function escapeHtml(text) {
+      var div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    document.getElementById('senha-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') fazerLogin();
+    });
+  </script>
+</body>
+</html>

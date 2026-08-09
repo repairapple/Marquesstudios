@@ -262,27 +262,64 @@
       var name = document.getElementById('s-name').value.trim();
       var procedure = document.getElementById('s-procedure');
       var procName = procedure.options[procedure.selectedIndex].text;
+      var procValue = procedure.value;
+      var dateValue = document.getElementById('s-date').value;
+      var timeValue = document.getElementById('s-time').value;
+      var phoneValue = document.getElementById('s-phone').value.trim();
+      var notesValue = document.getElementById('s-notes').value.trim();
 
-      // Simula envio — monta mensagem para WhatsApp
-      var message =
-        'Olá, Essence Studio! 💫%0A%0A' +
-        'Gostaria de agendar um horário:%0A' +
-        '👤 Nome: ' + encodeURIComponent(name) + '%0A' +
-        '💆‍♀️ Procedimento: ' + encodeURIComponent(procName) + '%0A' +
-        '📅 Data: ' + encodeURIComponent(document.getElementById('s-date').value) + '%0A' +
-        '⏰ Horário: ' + encodeURIComponent(document.getElementById('s-time').value);
+      // Envia para o backend
+      fetch('/api/agendamentos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome: name,
+          whatsapp: phoneValue,
+          procedimento: procName,
+          data: dateValue,
+          horario: timeValue,
+          observacoes: notesValue
+        })
+      })
+      .then(function(response) { return response.json(); })
+      .then(function(data) {
+        if (data.sucesso) {
+          // Monta mensagem para WhatsApp
+          var message =
+            'Olá, Essence Studio! 💫%0A%0A' +
+            'Gostaria de agendar um horário:%0A' +
+            '👤 Nome: ' + encodeURIComponent(name) + '%0A' +
+            '💆‍♀️ Procedimento: ' + encodeURIComponent(procName) + '%0A' +
+            '📅 Data: ' + encodeURIComponent(dateValue) + '%0A' +
+            '⏰ Horário: ' + encodeURIComponent(timeValue);
 
-      var notes = document.getElementById('s-notes').value.trim();
-      if (notes) {
-        message += '%0A📝 Obs: ' + encodeURIComponent(notes);
-      }
+          if (notesValue) {
+            message += '%0A📝 Obs: ' + encodeURIComponent(notesValue);
+          }
 
-      var whatsappUrl = 'https://wa.me/5511999999999?text=' + message;
-      window.open(whatsappUrl, '_blank');
+          var whatsappUrl = 'https://wa.me/5582996829318?text=' + message;
+          window.open(whatsappUrl, '_blank');
 
-      // Feedback visual
-      scheduleForm.reset();
-      showToast('Solicitação enviada! Você será redirecionada ao WhatsApp.');
+          scheduleForm.reset();
+          showToast('Agendamento enviado com sucesso! ✅');
+        } else {
+          showToast('Erro ao enviar. Tente novamente.');
+        }
+      })
+      .catch(function() {
+        showToast('Servidor não encontrado. Abrindo WhatsApp...');
+        // Fallback: abre WhatsApp mesmo sem backend
+        var message =
+          'Olá, Essence Studio! 💫%0A%0A' +
+          'Gostaria de agendar um horário:%0A' +
+          '👤 Nome: ' + encodeURIComponent(name) + '%0A' +
+          '💆‍♀️ Procedimento: ' + encodeURIComponent(procName) + '%0A' +
+          '📅 Data: ' + encodeURIComponent(dateValue) + '%0A' +
+          '⏰ Horário: ' + encodeURIComponent(timeValue);
+        var whatsappUrl = 'https://wa.me/5582996829318?text=' + message;
+        window.open(whatsappUrl, '_blank');
+        scheduleForm.reset();
+      });
     });
   }
 
