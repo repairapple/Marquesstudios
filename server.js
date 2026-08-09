@@ -9,7 +9,14 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(__dirname));
+
+// Serve arquivos estáticos da raiz do projeto
+app.use(express.static(path.join(__dirname)));
+
+// Rota raiz — serve index.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // Arquivo de dados
 const DATA_FILE = path.join(__dirname, 'data', 'agendamentos.json');
