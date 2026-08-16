@@ -397,10 +397,23 @@ input:focus, select:focus, textarea:focus {
   box-shadow: var(--shadow-lg);
 }
 
+@keyframes icon-wiggle {
+  0%   { transform: rotate(0deg) scale(1); }
+  25%  { transform: rotate(-8deg) scale(1.05); }
+  50%  { transform: rotate(7deg) scale(1.08); }
+  75%  { transform: rotate(-4deg) scale(1.05); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+
 .diff-card__icon {
   margin-bottom: 18px;
   display: flex;
   justify-content: center;
+  transition: transform var(--transition);
+}
+
+.diff-card:hover .diff-card__icon {
+  animation: icon-wiggle 0.6s ease-in-out;
 }
 
 .diff-card__title {
